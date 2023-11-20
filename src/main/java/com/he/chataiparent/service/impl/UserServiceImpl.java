@@ -8,7 +8,7 @@ import com.he.chataiparent.mapper.UserMapper;
 import com.he.chataiparent.model.vo.EditUserVO;
 import com.he.chataiparent.model.vo.UserInfoVO;
 import com.he.chataiparent.model.vo.UserVO;
-import com.he.chataiparent.model.pojo.User;
+import com.he.chataiparent.model.entity.User;
 import com.he.chataiparent.model.result.Result;
 import com.he.chataiparent.service.UserService;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.he.chataiparent.service;
 
 import com.he.chataiparent.model.vo.EditUserVO;
 import com.he.chataiparent.model.vo.UserVO;
-import com.he.chataiparent.model.pojo.User;
+import com.he.chataiparent.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.he.chataiparent.model.result.Result;
 
