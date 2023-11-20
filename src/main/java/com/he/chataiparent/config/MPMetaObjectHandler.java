@@ -1,4 +1,4 @@
-package com.he.chataiparent.common.config;
+package com.he.chataiparent.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;

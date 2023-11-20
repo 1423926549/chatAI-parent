@@ -1,4 +1,4 @@
-package com.he.chataiparent.model.result;
+package com.he.chataiparent.common.result;
 
 import lombok.Getter;
 

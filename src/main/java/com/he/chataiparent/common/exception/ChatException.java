@@ -1,6 +1,6 @@
 package com.he.chataiparent.common.exception;
 
-import com.he.chataiparent.model.result.ResultCode;
+import com.he.chataiparent.common.result.ResultCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

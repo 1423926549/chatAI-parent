@@ -1,4 +1,4 @@
-package com.he.chataiparent.model.result;
+package com.he.chataiparent.common.result;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;

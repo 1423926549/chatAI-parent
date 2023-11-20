@@ -3,7 +3,7 @@ package com.he.chataiparent.controller;
 import com.he.chataiparent.model.vo.EditUserVO;
 import com.he.chataiparent.model.vo.UserVO;
 import com.he.chataiparent.model.entity.User;
-import com.he.chataiparent.model.result.Result;
+import com.he.chataiparent.common.result.Result;
 import com.he.chataiparent.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
