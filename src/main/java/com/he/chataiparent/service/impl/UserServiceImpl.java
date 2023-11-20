@@ -88,7 +88,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(password);
         user.setNickname(editUserVO.getNickname());
         this.updateById(user);
-        return Result.ok("修改成功");
+
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtil.copyProperties(user, userInfoVO);
+
+        return Result.ok(userInfoVO);
     }
 
     /**
@@ -107,11 +111,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         wrapper.eq(User::getPassword, password);
         User user = this.getOne(wrapper);
 
-        if (user != null) {
-            return Result.ok("密码正确");
-        }
+        return Result.ok(user != null);
 
-        return Result.fail("密码与原密码不一致");
     }
 }
 
