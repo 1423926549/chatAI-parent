@@ -33,7 +33,7 @@ spring:
       password: 123456
       database: 1
 
-bailian:
+chat:
   accessKeyId: "LTAI5tLPuVAYuoWdB4j3aAhf"
   accessKeySecret: "0hzUuKooKsMpxfOeudENX2n6qK11HZ"
   agentKey: "b254d0bfb85f4374bf0aa85bf8ca87c8_p_efm"

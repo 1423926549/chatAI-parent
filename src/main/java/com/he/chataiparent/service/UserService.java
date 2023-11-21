@@ -41,4 +41,6 @@ public interface UserService extends IService<User> {
      * @return
      */
     Result checkPassword(UserVO userVO);
+
+    void logout();
 }

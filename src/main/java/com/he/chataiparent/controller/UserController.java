@@ -64,4 +64,10 @@ public class UserController {
         return Result.ok(AuthContextHolder.getUserInfo());
     }
 
+    @GetMapping("/logout")
+    public Result logout() {
+        userService.logout();
+        return Result.ok("退出成功");
+    }
+
 }

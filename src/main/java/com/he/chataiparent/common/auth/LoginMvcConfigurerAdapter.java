@@ -20,6 +20,7 @@ public class LoginMvcConfigurerAdapter extends WebMvcConfigurationSupport {
         List<String> patterns = new ArrayList<>();
         patterns.add("/user/login");
         patterns.add("/user/register");
+        patterns.add("/user/logout");
         registry.addInterceptor(new LoginInterceptor(redisTemplate))
                 .addPathPatterns("/**")  // 添加拦截路径
                 .excludePathPatterns(patterns);  // 排除路径

@@ -3,6 +3,7 @@ package com.he.chataiparent.common.auth;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.he.chataiparent.common.constant.RedisConst;
+import com.he.chataiparent.common.exception.ChatException;
 import com.he.chataiparent.common.result.Result;
 import com.he.chataiparent.common.result.ResultCode;
 import com.he.chataiparent.model.vo.UserInfoVO;
@@ -36,6 +37,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         String shortToken = request.getHeader("shortToken");
         String longToken = request.getHeader("longToken");
+
+        if (StrUtil.isBlank(shortToken) && StrUtil.isBlank(longToken)) {
+            throw new ChatException(ResultCode.UNAUTHORIZED);
+        }
+
         // 判断短token是否有效
         if (StrUtil.isNotBlank(shortToken)) {
             try {
@@ -44,7 +50,7 @@ public class LoginInterceptor implements HandlerInterceptor {
                 // 根据userId从Redis中获取用户信息
                 UserInfoVO userInfo = (UserInfoVO) redisTemplate.opsForValue().get(RedisConst.USER_LOGIN_KEY_PREFIX + userId);
                 if (userId == null || userInfo == null) {
-                    throw new Exception("无效的短token");
+                    throw new ChatException(401, "无效的短token");
                 }
 
                 // 将数据存放到ThreadLocal中
@@ -56,33 +62,32 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
 
             // 判断长token是否有效
-            if (StrUtil.isNotBlank(longToken)) {
-                try {
-                    // 获取userId
-                    Long userId = JwtHelper.getUserId(longToken);
-                    // 根据userId从Redis中获取用户信息
-                    UserInfoVO userInfo = (UserInfoVO) redisTemplate.opsForValue().get(RedisConst.USER_LOGIN_KEY_PREFIX + userId);
-                    if (userId == null || userInfo == null) {
-                        throw new Exception("无效的长token");
-                    }
-
-                    // 将数据存放到ThreadLocal中
-                    AuthContextHolder.setUserId(userId);
-                    AuthContextHolder.setUserInfo(userInfo);
-
-                    // 刷新短token
-                    Map<String, String> map = JwtHelper.refresh(longToken);
-                    map.forEach(response::setHeader);
-                    // 更新Redis中的缓存
-                    redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + userId,
-                                                    userInfo,
-                                                    RedisConst.USER_LOGIN_TIMEOUT,
-                                                    TimeUnit.SECONDS);
-                } catch (Exception e) {
-                    log.error(e.getClass() + ": " +e.getMessage());
-                    response.getWriter().write(JSON.toJSONString(Result.build(null, ResultCode.UNAUTHORIZED)));
-                    return false;
+            try {
+                // 获取userId
+                Long userId = JwtHelper.getUserId(longToken);
+                // 根据userId从Redis中获取用户信息
+                UserInfoVO userInfo = (UserInfoVO) redisTemplate.opsForValue().get(RedisConst.USER_LOGIN_KEY_PREFIX + userId);
+                if (userId == null || userInfo == null) {
+                    throw new ChatException(401, "无效的长token");
                 }
+
+                // 将数据存放到ThreadLocal中
+                AuthContextHolder.setUserId(userId);
+                AuthContextHolder.setUserInfo(userInfo);
+
+                // 刷新短token
+                Map<String, String> map = JwtHelper.refresh(longToken);
+                map.forEach(response::setHeader);
+                // 更新Redis中的缓存
+                redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + userId,
+                        userInfo,
+                        RedisConst.USER_LOGIN_TIMEOUT,
+                        TimeUnit.SECONDS);
+                return true;
+            } catch (Exception e) {
+                log.error(e.getClass() + ": " + e.getMessage());
+                response.getWriter().write(JSON.toJSONString(Result.build(null, ResultCode.UNAUTHORIZED)));
+                return false;
             }
         }
         return true;

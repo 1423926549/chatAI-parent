@@ -148,6 +148,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return Result.ok(user != null);
 
     }
+
+    /**
+     *
+     */
+    @Override
+    public void logout() {
+        Long userId = AuthContextHolder.getUserId();
+        redisTemplate.delete(RedisConst.USER_LOGIN_KEY_PREFIX + userId);
+        AuthContextHolder.clear();
+    }
 }
 
 
