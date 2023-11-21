@@ -14,4 +14,10 @@ public interface ChatsService extends IService<Chats> {
      * 创建chat
      */
     void create();
+
+    /**
+     * 删除chat
+     * @param id
+     */
+    void deleteChat(Long id);
 }

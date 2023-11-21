@@ -45,7 +45,7 @@ public class ChatsController {
 
     @DeleteMapping("/delete/{id}")
     public Result deleteChat(@PathVariable Long id) {
-        chatsService.removeById(id);
+        chatsService.deleteChat(id);
         return Result.ok("删除成功");
     }
 
