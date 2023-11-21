@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.he.chataiparent.common.auth.AuthContextHolder;
+import com.he.chataiparent.common.constant.RedisConst;
 import com.he.chataiparent.mapper.UserMapper;
 import com.he.chataiparent.model.vo.EditUserVO;
 import com.he.chataiparent.model.vo.UserInfoVO;
@@ -11,7 +13,16 @@ import com.he.chataiparent.model.vo.UserVO;
 import com.he.chataiparent.model.entity.User;
 import com.he.chataiparent.common.result.Result;
 import com.he.chataiparent.service.UserService;
+import com.he.chataiparent.utils.JwtHelper;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
 * @author he
@@ -19,12 +30,23 @@ import org.springframework.stereotype.Service;
 * @createDate 2023-11-17 15:41:04
 */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
 
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    /**
+     * 登录
+     * @param userVO
+     * @param request
+     * @return
+     */
     @Override
-    public Result login(UserVO userVo) {
-        String username = userVo.getUsername();
-        String password = userVo.getPassword();
+    public Result login(UserVO userVO, HttpServletRequest request) {
+        String username = userVO.getUsername();
+        String password = userVO.getPassword();
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUsername, username);
         User user = this.getOne(wrapper);
@@ -39,7 +61,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtil.copyProperties(user, userInfoVO);
 
-        return Result.ok(userInfoVO);
+        String shortToken = JwtHelper.createShortToken(user.getId(), user.getUsername());
+        String longToken = JwtHelper.createLongToken(user.getId(), user.getUsername());
+        redisTemplate.opsForValue().set(RedisConst.USER_LOGIN_KEY_PREFIX + user.getId(),
+                                        userInfoVO,
+                                        RedisConst.USER_LOGIN_TIMEOUT,
+                                        TimeUnit.SECONDS);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("shortToken", shortToken);
+        map.put("longToken", longToken);
+        map.put("userInfo", userInfoVO);
+
+        return Result.ok(map);
     }
 
     /**

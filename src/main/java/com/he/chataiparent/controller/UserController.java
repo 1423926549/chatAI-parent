@@ -1,15 +1,19 @@
 package com.he.chataiparent.controller;
 
+import com.he.chataiparent.common.auth.AuthContextHolder;
 import com.he.chataiparent.model.vo.EditUserVO;
 import com.he.chataiparent.model.vo.UserVO;
 import com.he.chataiparent.model.entity.User;
 import com.he.chataiparent.common.result.Result;
 import com.he.chataiparent.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -17,12 +21,12 @@ public class UserController {
 
     /**
      * 登录
-     * @param userVo
+     * @param userVO
      * @return
      */
     @PostMapping("/login")
-    public Result login(@RequestBody UserVO userVo) {
-        return userService.login(userVo);
+    public Result login(@RequestBody UserVO userVO, HttpServletRequest request) {
+        return userService.login(userVO, request);
     }
 
     /**
@@ -47,13 +51,17 @@ public class UserController {
 
     /**
      * 校验密码
-     * TODO 后续改进不需要从前端获取用户名，直接根据ThreadLocal中获取
      * @param userVO
      * @return
      */
     @PostMapping("checkPassword")
     public Result checkPassword(@RequestBody UserVO userVO) {
         return userService.checkPassword(userVO);
+    }
+
+    @GetMapping("/isLogin")
+    public Result isLogin() {
+        return Result.ok(AuthContextHolder.getUserInfo());
     }
 
 }

@@ -7,7 +7,7 @@ public enum ResultCode {
 
     SUCCESS(200, "成功"),
     FAIL(201, "失败"),
-    UNAUTHORIZED(401, "未授权"),
+    UNAUTHORIZED(401, "身份验证失败"),
     FORBIDDEN(403, "禁止访问"),
     NOT_FOUND(404, "未找到"),
     METHOD_NOT_ALLOWED(405, "方法不允许"),

@@ -13,10 +13,10 @@ public class ChatException extends RuntimeException {
 
     /**
      * 通过状态码和错误消息创建异常对象
-     * @param message
      * @param code
+     * @param message
      */
-    public ChatException(String message, Integer code) {
+    public ChatException(Integer code, String message) {
         super(message);
         this.code = code;
     }

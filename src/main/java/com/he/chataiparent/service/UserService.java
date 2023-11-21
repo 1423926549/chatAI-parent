@@ -5,6 +5,7 @@ import com.he.chataiparent.model.vo.UserVO;
 import com.he.chataiparent.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.he.chataiparent.common.result.Result;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
 * @author he
@@ -15,10 +16,10 @@ public interface UserService extends IService<User> {
 
     /**
      * 登录
-     * @param userVo
+     * @param userVO
      * @return
      */
-    Result login(UserVO userVo);
+    Result login(UserVO userVO, HttpServletRequest request);
 
     /**
      * 注册
